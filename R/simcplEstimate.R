@@ -17,11 +17,13 @@
 #' @param stepsize 
 #' @param stepadj 
 #' @param sliceadj 
+#' 
+#' @importFrom utils object.size
 #'
 #' @return NULL
 #' @export 
 #'
-#' @examples
+#' @examples NULL
 simcplEstimate <- function(
     seed, filedir, filename,
     outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, 

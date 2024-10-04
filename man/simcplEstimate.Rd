@@ -62,3 +62,6 @@ simcplEstimate(
 \description{
 Simulate sample data and estimate Bayesian copula sample selection model
 }
+\examples{
+NULL
+}

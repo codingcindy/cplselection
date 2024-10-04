@@ -13,6 +13,12 @@ simstudy_Heckit(seeds, folderpath, rest.time)
 
 \item{rest.time}{}
 }
+\value{
+A data.frame object containing results.
+}
 \description{
 Performs simulation study with heckit method
+}
+\examples{
+NULL
 }

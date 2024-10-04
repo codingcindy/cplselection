@@ -5,6 +5,7 @@
 #' @importFrom progress progress_bar
 #' @importFrom truncnorm rtruncnorm
 #' @importFrom MASS mvrnorm
+#' @importFrom stats runif rnorm pnorm qnorm ppois pnbinom terms
 #' 
 #' @export
 #'

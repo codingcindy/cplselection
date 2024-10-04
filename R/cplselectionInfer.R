@@ -1,3 +1,13 @@
+#' Conduct Bayesian inference with given MCMC iterates
+#'
+#' @param iterates A list of MCMC iterates matrix returned by `cplselectionMCMC` funciton
+#' @param burnin Burn-in iterations to discard.
+#'
+#' @importFrom stats sd quantile
+#' @return A data.frame object containing estimation results.
+#' @export
+#'
+#' @examples NULL
 cplselectionInfer <- function(iterates, burnin) {
   loop <- dim(iterates$ZS)[2]
   range <- burnin:loop
@@ -24,8 +34,5 @@ cplselectionInfer <- function(iterates, burnin) {
     res <- rbind(res,rescoef)
   }
   res <- res[,c("median","sd","lb","ub")]
-  # print(round(res, 2))
   return(res)
 }
-
-

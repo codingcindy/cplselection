@@ -38,6 +38,12 @@ simHeckitEstimate(
 
 \item{select_formula}{}
 }
+\value{
+A data.frame object containing estimation results.
+}
 \description{
 Simulate data and estimate with Heckit method
+}
+\examples{
+NULL
 }

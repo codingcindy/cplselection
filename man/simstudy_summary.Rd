@@ -13,5 +13,5 @@ A summary table of Bayesian estimates and true parameters
 Summarize the Bayesian estimation results of input files
 }
 \examples{
-none.
+NULL
 }

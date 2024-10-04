@@ -4,10 +4,10 @@
 #' @param folderpath 
 #' @param rest.time 
 #'
-#' @return
+#' @return A data.frame object containing results.
 #' @export
 #'
-#' @examples
+#' @examples NULL
 simstudy_Heckit <- function(seeds, folderpath, rest.time) {
   library(parallel)
   ## create directory if not exists

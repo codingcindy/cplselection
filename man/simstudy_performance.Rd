@@ -4,14 +4,22 @@
 \alias{simstudy_performance}
 \title{Generate Performance Metrics Table for Simulation Studies}
 \usage{
-simstudy_performance(restab, details = TRUE)
+simstudy_performance(
+  restab,
+  by = c("x_dist", "dependence", "selectivity"),
+  type = "Bayes",
+  trim = 0
+)
 }
 \arguments{
 \item{restab}{Result summary table}
 }
 \value{
-Performance metrics
+A data.frame object containing performance metrics.
 }
 \description{
 Generate Performance Metrics Table for Simulation Studies
+}
+\examples{
+NULL
 }

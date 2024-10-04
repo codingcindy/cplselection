@@ -2,12 +2,16 @@
 #'
 #' @param restab Result summary table
 #'
-#' @return Performance metrics
+#' @importFrom utils head
+#' @importFrom stats median 
+#' @importFrom dplyr %>% group_by group_by_at mutate rename summarise ungroup  
+#' 
+#' @return A data.frame object containing performance metrics.
 #' @export
 #'
-#' @examples
+#' @examples NULL
 simstudy_performance <- function(restab, by=c("x_dist","dependence","selectivity"), type="Bayes",trim=0) {
-  library(dplyr)
+
   ## Standardize Input Dataframe
   if (type=="Bayes") {
     ## add dependence & selectivity columns

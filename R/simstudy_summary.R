@@ -1,9 +1,10 @@
 #' Summarize the Bayesian estimation results of input files
 #'
+#' @importFrom utils head
 #' @return A summary table of Bayesian estimates and true parameters
 #' @export 
 #'
-#' @examples none.
+#' @examples NULL
 simstudy_summary <- function(folderpath) {
   ## get file names
   file_list <- list.files(folderpath)

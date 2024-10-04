@@ -11,6 +11,7 @@
 #' @param nobs Number of observations.
 #' @param selection Whether sample selection happens.
 #'
+#' @importFrom stats rnorm runif rpois rnbinom pnorm qnorm qpois qnbinom qbinom
 #' @export
 #' 
 simdata <- function(outcome_dist, outcome_par, select_dist, select_par, 
@@ -94,10 +95,6 @@ simdata <- function(outcome_dist, outcome_par, select_dist, select_par,
     df$YOstar <- df$YO
     df$YO[df$YS==0] <- NA
   }
-  # df$ZO <- Z[,1]
-  # df$ZS <- Z[,2]
-  # df$UO <- U[,1]
-  # df$US <- U[,2]
   
   return(df)
 }

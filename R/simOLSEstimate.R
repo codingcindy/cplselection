@@ -1,8 +1,27 @@
+#' Perform OLS estimation at scale
+#'
+#' @param seed 
+#' @param outcome_dist 
+#' @param select_dist 
+#' @param outcome_par 
+#' @param select_par 
+#' @param theta 
+#' @param x_dist 
+#' @param nobs 
+#' @param outcome_formula 
+#' @param select_formula 
+#'
+#' @importFrom utils head 
+#' @importFrom stats lm glm binomial
+#' @importFrom MASS glm.nb
+#' 
+#' @return A data.frame object containing OLS estimation results.
+#' @export
+#'
+#' @examples NULL
 simOLSEstimate <- function(
     seed, outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, 
     outcome_formula, select_formula) {
-  library(MASS)
-  library(stats)
   ## simulate data set
   set.seed(seed)
   df <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,

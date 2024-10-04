@@ -1,5 +1,15 @@
+#' Simulation study : Logit - Normal
+#'
+#' @param seeds 
+#' @param folderpath 
+#' @param rest.time 
+#'
+#' @return NULL
+#' @export
+#'
+#' @examples NULL
 simstudy_LogitNorm <- function(seeds, folderpath, rest.time=600) {
-  library(parallel)
+
   ## create directory if not exists
   if (!file.exists(folderpath)) {
     dir.create(folderpath)

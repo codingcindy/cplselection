@@ -10,17 +10,18 @@
 #' @param nobs 
 #' @param outcome_formula 
 #' @param select_formula 
+#' 
+#' @importFrom utils head
+#' @importFrom stats lm glm dnorm pnorm binomial reformulate predict
+#' @importFrom sampleSelection heckit
 #'
-#' @return
+#' @return A data.frame object containing estimation results. 
 #' @export
 #'
-#' @examples
+#' @examples NULL
 simHeckitEstimate <- function(
     seed, outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, 
     outcome_formula, select_formula) {
-  library(MASS)
-  library(stats)
-  library(sampleSelection)
   ## simulate data set
   set.seed(seed)
   df <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,
