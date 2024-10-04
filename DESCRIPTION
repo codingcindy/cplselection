@@ -1,0 +1,13 @@
+Package: cplselection
+Type: Package
+Title: Correct sample selection bias with Gaussian copula model
+Version: 1.0
+Date: 2024-08-19
+Author: Xindie Huang
+Maintainer: Xindie Huang <xindie.huang@connect.ust.hk>
+Description: This package corrects for sample selection bias and allows user-specified marginal distributions of outcome variable and selection process.
+License: GPL-3
+Encoding: UTF-8
+Imports: Rcpp (>= 1.0.10), RcppEigen, progress, MASS, truncnorm 
+LinkingTo: Rcpp, RcppEigen
+RoxygenNote: 7.3.2
