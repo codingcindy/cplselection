@@ -4,12 +4,14 @@
 \alias{cplselectionInfer}
 \title{Conduct Bayesian inference with given MCMC iterates}
 \usage{
-cplselectionInfer(iterates, burnin)
+cplselectionInfer(iterates, burnin, trueval = NULL)
 }
 \arguments{
 \item{iterates}{A list of MCMC iterates matrix returned by `cplselectionMCMC` funciton}
 
 \item{burnin}{Burn-in iterations to discard.}
+
+\item{trueval}{True parameters, if available. Default set to NULL.}
 }
 \value{
 A data.frame object containing estimation results.

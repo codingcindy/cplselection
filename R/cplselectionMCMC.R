@@ -1,12 +1,21 @@
 #' MCMC Sampling of Bayesian copula sample selection model
 #'
-#' @returns a list of MCMC draws
+#' @param outcome_formula 
+#' @param select_formula 
+#' @param outcome_dist 
+#' @param select_dist 
+#' @param data 
+#' @param loop 
+#' @param stepsize 
+#' @param stepadj 
+#' @param sliceadj 
 #' 
 #' @importFrom progress progress_bar
 #' @importFrom truncnorm rtruncnorm
 #' @importFrom MASS mvrnorm
 #' @importFrom stats runif rnorm pnorm qnorm ppois pnbinom terms
 #' 
+#' @returns a list of MCMC draws
 #' @export
 #'
 #' @examples NULL

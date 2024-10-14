@@ -10,6 +10,7 @@
 #' @param theta 
 #' @param x_dist 
 #' @param nobs 
+#' @param vis visibility
 #' @param outcome_formula 
 #' @param select_formula 
 #' @param loop 
@@ -25,40 +26,41 @@
 #'
 #' @examples NULL
 simcplEstimate <- function(
-    seed, filedir, filename,
-    outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, 
+    seed, filedir, filename, 
+    outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, vis, 
     outcome_formula, select_formula, loop, burnin, stepsize, stepadj, sliceadj
     ) {
   ## simulate data set
   set.seed(seed)
-  df <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,
-                select_dist=select_dist, select_par=select_par,
-                theta=theta, x_dist=x_dist, nobs=nobs, selection=TRUE)
+  tmp <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,
+                 select_dist=select_dist, select_par=select_par,
+                 theta=theta, x_dist=x_dist, nobs=nobs, vis=vis, selection=TRUE)
+  df <- tmp$data
+  select_par$beta[1] <- tmp$intercept
   ## get true values
   if (outcome_dist=="Normal") {
-    morepar <- outcome_par$sigma
+    trueval <- c(theta=theta, betaO=outcome_par$beta[1:3], betaS=select_par$beta, sigmaO=outcome_par$sigma)
   } else if (outcome_dist=="Negative Binomial") {
-    morepar <- outcome_par$r
+    trueval <- c(theta=theta, betaO=outcome_par$beta[1:3], betaS=select_par$beta, r=outcome_par$r)
   } else {
-    morepar <- NULL
+    trueval <- c(theta=theta, betaO=outcome_par$beta[1:3], betaS=select_par$beta)
   }
-  trueval <- c(theta=theta, betaO=outcome_par$beta[1:3], 
-               betaS=select_par$beta, morepar=morepar)
   ## copula sample selection model
   set.seed(seed)
-  iterates <- cplselectionMCMC(outcome_formula, select_formula,
-                               outcome_dist, select_dist, data=df,
-                               loop, stepsize, stepadj, sliceadj)
-  res <- cplselectionInfer(iterates, burnin)
+  iterates <- cplselectionMCMC(outcome_formula=outcome_formula, select_formula=select_formula,
+                               outcome_dist=outcome_dist, select_dist=select_dist, data=df,
+                               loop=loop, stepsize=stepsize, stepadj=stepadj, sliceadj=sliceadj)
+  res <- cplselectionInfer(iterates=iterates, burnin=burnin, trueval=trueval)
   ## data to save
   reslist <- list()
   reslist$outcome_dist <- outcome_dist
   reslist$select_dist <- select_dist
-  reslist$x_dist <- x_dist
   reslist$outcome_par <- outcome_par
   reslist$select_par <- select_par
+  reslist$selectivity <- vis
+  reslist$nobs <- nobs
   reslist$theta <- theta
-  reslist$morepar <- morepar
+  reslist$x_dist <- x_dist
   iterates$ZS <- NULL
   iterates$MH_step <- NULL
   iterates$acceptance_prob <- NULL
@@ -69,5 +71,6 @@ simcplEstimate <- function(
   save(reslist, file=fname)
   ## ensure the object size
   print(format(object.size(reslist), units="MB"))
-  return(NULL)
+  
+  return(reslist$result)
 }

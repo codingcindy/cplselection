@@ -11,8 +11,9 @@ simHeckitEstimate(
   outcome_par,
   select_par,
   theta,
-  x_dist,
   nobs,
+  vis,
+  x_dist,
   outcome_formula,
   select_formula
 )
@@ -30,9 +31,9 @@ simHeckitEstimate(
 
 \item{theta}{}
 
-\item{x_dist}{}
-
 \item{nobs}{}
+
+\item{x_dist}{}
 
 \item{outcome_formula}{}
 

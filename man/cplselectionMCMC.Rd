@@ -16,6 +16,25 @@ cplselectionMCMC(
   sliceadj = 500
 )
 }
+\arguments{
+\item{outcome_formula}{}
+
+\item{select_formula}{}
+
+\item{outcome_dist}{}
+
+\item{select_dist}{}
+
+\item{data}{}
+
+\item{loop}{}
+
+\item{stepsize}{}
+
+\item{stepadj}{}
+
+\item{sliceadj}{}
+}
 \value{
 a list of MCMC draws
 }

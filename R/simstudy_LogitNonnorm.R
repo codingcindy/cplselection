@@ -6,7 +6,7 @@ simstudy_LogitNonnorm <- function(seeds, folderpath, rest.time=600) {
   }
   ## manipulations
   sd <- "Logit"
-  od <- c("Probit", "Logit", "Poisson")
+  od <- c("Probit", "Logit", "Poisson", "Negative Binomial")
   cor <- c(-.8,-.5,-.2,0,.2,.5,.8)
   selectivity <- c(-1,0,1) # low 30%, medium 50%, high 70%
   endog_dist_list <- list(list(dist="Normal",mean=0,sd=1),
@@ -23,8 +23,9 @@ simstudy_LogitNonnorm <- function(seeds, folderpath, rest.time=600) {
   sliceadj <- 100
   select_formula <- YS~X1+X2+X3
   outcome_formula <- YO~X1+X2
-  outcome_par <- list(beta=c(1,1,1,0), sigma=1)
+  outcome_par <- list(beta=c(1,1,1,0), sigma=1, r=1)
   parsetting <- 0
+  time_start <- Sys.time()
   for (i in (1:length(endog_dist_list))) {
     x_dist <- list(endog_dist_list[[i]],
                    list(dist="Normal",mean=0,sd=1),
@@ -39,10 +40,13 @@ simstudy_LogitNonnorm <- function(seeds, folderpath, rest.time=600) {
         for (outcome_dist in od) {
           for (theta in cor) {
             parsetting <- parsetting+1
-            ## temporary use: restart if stopped halfway
+            ## temporary use: add more outcome distributions
             message(paste0("Parameter setting ", parsetting, " starts."))
-            if (parsetting < 223) next
-            filename <- paste0("parset",parsetting)
+            if (outcome_dist != "Negative Binomial") next
+            # ## temporary use: restart if stopped halfway
+            # message(paste0("Parameter setting ", parsetting, " starts."))
+            # if (parsetting < 223) next
+            filename <- paste0("xdist",i,"vis",pct,"dep",theta,"_",select_dist,"-",outcome_dist)
             tryCatch(
               {
                 parallel::mclapply(seeds, FUN=simcplEstimate, 
@@ -60,7 +64,13 @@ simstudy_LogitNonnorm <- function(seeds, folderpath, rest.time=600) {
               },
               finally = {
                 message(paste0("Parameter setting ",parsetting," done. Rest for ",rest.time/60," minutes."))
-                Sys.sleep(rest.time)
+                # ## avoid overheating, silence if run on server
+                # time_run <- Sys.time()-time_start
+                # if (time_run>3000) {
+                #   message("Running for ",time_run/60, " minutes. Take a rest for ", rest.time/60," minutes.")
+                #   Sys.sleep(rest.time)
+                #   time_start <- Sys.time()
+                # }
               }
             )
           }

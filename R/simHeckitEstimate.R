@@ -20,14 +20,27 @@
 #'
 #' @examples NULL
 simHeckitEstimate <- function(
-    seed, outcome_dist, select_dist, outcome_par, select_par, theta, x_dist, nobs, 
-    outcome_formula, select_formula) {
+    seed, outcome_dist, select_dist, outcome_par, select_par, theta,
+    nobs, vis, x_dist, outcome_formula, select_formula) {
   ## simulate data set
   set.seed(seed)
-  df <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,
-                select_dist=select_dist, select_par=select_par,
-                theta=theta, x_dist=x_dist, nobs=nobs, selection=TRUE)
+  tmp <- simdata(outcome_dist=outcome_dist, outcome_par=outcome_par,
+                 select_dist=select_dist, select_par=select_par,
+                 theta=theta, x_dist=x_dist, nobs=nobs, vis=vis, 
+                 selection=TRUE)
+  df <- tmp$data
+  select_par$beta[1] <- tmp$intercept
   ## get true values
+  # if (outcome_dist=="Normal") {
+  #   trueval <- c(betaS=select_par$beta, betaO=outcome_par$beta[1:3],
+  #                rho=theta, IMR=NA, sigma=outcome_par$sigma, rho=theta)
+  # } else if (outcome_dist=="Negative Binomial") {
+  #   trueval <- c(betaS=select_par$beta, betaO=outcome_par$beta[1:3],
+  #                rho=theta, IMR=NA, r=outcome_par$r, rho=theta)
+  # } else {
+  #   trueval <- c(betaS=select_par$beta, betaO=outcome_par$beta[1:3],
+  #                rho=theta, IMR=NA, rho=theta)
+  # }
   if (outcome_dist=="Normal") {
     morepar <- outcome_par$sigma
   } else if (outcome_dist=="Negative Binomial") {
@@ -35,10 +48,10 @@ simHeckitEstimate <- function(
   } else {
     morepar <- NULL
   }
-  trueval <- c(betaS=select_par$beta, betaO=head(outcome_par$beta,-1), 
+  trueval <- c(betaS=select_par$beta, betaO=head(outcome_par$beta,-1),
                IMR=NA, morepar=morepar, rho=theta)
-  cnames <- c(paste0("betaS", 0:(length(select_par$beta)-1)), 
-              paste0("betaO", 0:(length(outcome_par$beta)-2)), 
+  cnames <- c(paste0("betaS", 0:(length(select_par$beta)-1)),
+              paste0("betaO", 0:(length(outcome_par$beta)-2)),
               "IMR")
   ## heckit sample selection model
   if (outcome_dist=="Normal") {
@@ -81,8 +94,7 @@ simHeckitEstimate <- function(
     select_dist=select_dist,
     x_dist=x_dist[[1]]$dist,
     dependence=theta,
-    selectivity=ifelse((x_dist[[1]]$dist=="Poisson"),
-                       select_par$beta[1]+1, select_par$beta[1]),
+    selectivity=vis,
     pctobs=mean(df$YS),
     seed=seed,
     parameter=cnames,

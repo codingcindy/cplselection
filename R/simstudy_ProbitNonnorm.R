@@ -40,13 +40,13 @@ simstudy_ProbitNonnorm <- function(seeds, folderpath, rest.time=600) {
         for (outcome_dist in od) {
           for (theta in cor) {
             parsetting <- parsetting+1
-            # ## temporary use: restart if stopped halfway
-            # message(paste0("Parameter setting ", parsetting, " starts."))
-            # if (parsetting < 96) next
             ## temporary use: add more outcome distributions
             message(paste0("Parameter setting ", parsetting, " starts."))
             if (outcome_dist != "Negative Binomial") next
-            filename <- paste0("parset_NB",parsetting)
+            # ## temporary use: restart if stopped halfway
+            # message(paste0("Parameter setting ", parsetting, " starts."))
+            # if (parsetting < 135) next
+            filename <- paste0("xdist",i,"vis",pct,"dep",theta,"_",select_dist,"-",outcome_dist)
             tryCatch(
               {
                 parallel::mclapply(seeds, FUN=simcplEstimate, 
@@ -64,12 +64,13 @@ simstudy_ProbitNonnorm <- function(seeds, folderpath, rest.time=600) {
               },
               finally = {
                 message(paste0("Parameter setting ",parsetting," done."))
-                time_run <- Sys.time()-time_start
-                if (time_run>3000) {
-                  message("Running for ",time_run/60, " minutes. Rest for ", rest.time/60," minutes.")
-                  Sys.sleep(rest.time)
-                  time_start <- Sys.time()
-                }
+                # ## avoid overheating, silence if run on server
+                # time_run <- Sys.time()-time_start
+                # if (time_run>3000) {
+                #   message("Running for ",time_run/60, " minutes. Take a rest for ", rest.time/60," minutes.")
+                #   Sys.sleep(rest.time)
+                #   time_start <- Sys.time()
+                # }
               }
             )
           }

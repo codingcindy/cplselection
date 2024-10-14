@@ -2,13 +2,14 @@
 #'
 #' @param iterates A list of MCMC iterates matrix returned by `cplselectionMCMC` funciton
 #' @param burnin Burn-in iterations to discard.
+#' @param trueval True parameters, if available. Default set to NULL.
 #'
 #' @importFrom stats sd quantile
 #' @return A data.frame object containing estimation results.
 #' @export
 #'
 #' @examples NULL
-cplselectionInfer <- function(iterates, burnin) {
+cplselectionInfer <- function(iterates, burnin, trueval=NULL) {
   loop <- dim(iterates$ZS)[2]
   range <- burnin:loop
   iterates$ZS <- NULL
@@ -34,5 +35,8 @@ cplselectionInfer <- function(iterates, burnin) {
     res <- rbind(res,rescoef)
   }
   res <- res[,c("median","sd","lb","ub")]
+  if (!is.null(trueval)) {
+    res <- cbind(trueval, res)
+  }
   return(res)
 }

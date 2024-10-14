@@ -15,6 +15,7 @@ simcplEstimate(
   theta,
   x_dist,
   nobs,
+  vis,
   outcome_formula,
   select_formula,
   loop,
@@ -44,6 +45,8 @@ simcplEstimate(
 \item{x_dist}{}
 
 \item{nobs}{}
+
+\item{vis}{visibility}
 
 \item{outcome_formula}{}
 

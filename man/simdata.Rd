@@ -10,8 +10,9 @@ simdata(
   select_dist,
   select_par,
   theta,
-  x_dist,
   nobs,
+  vis,
+  x_dist,
   selection = TRUE
 )
 }
@@ -26,10 +27,10 @@ simdata(
 
 \item{theta}{The dependence parameter in the Gaussian copula function.}
 
+\item{nobs}{Number of observations.}
+
 \item{x_dist}{A list of explanatory variable distributional specification lists. 
 Options are "Normal", "Uniform", "Poisson", "Negative Binomial" and "Normal Mixture".}
-
-\item{nobs}{Number of observations.}
 
 \item{selection}{Whether sample selection happens.}
 
