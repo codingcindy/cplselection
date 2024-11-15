@@ -42,5 +42,24 @@ A list of iteration results, including MCMC parameter draws, acceptance probabil
 This function performs MCMC sampling of the Bayesian copula sample selection model using Gibbs within Metropolis-Hastings algorithm.
 }
 \examples{
-NULL
+# Example data : Poisson outcome variable YO, logit selection process YS
+nobs <- 300
+dependence <- 0.5
+betaO0 <- 1
+betaO1 <- 1
+betaS0 <- 0
+betaS1 <- 1
+betaS2 <- 1
+uo <- runif(nobs)
+us <- pnorm(dependence*qnorm(uo) + dependence*rnorm(nobs))
+data <- data.frame(X1 = rnorm(nobs), X2 = rnorm(nobs))
+data$YO <- qpois(p=uo, lambda=exp(betaO0 + betaO1*data$X1))
+data$YS <- qbinom(p=us, prob=1/(1+exp(-(betaS0 + betaS1*data$X1 + betaS2*data$X2))), size=1)
+data$YO[data$YS==0] <- NA
+
+# Perform MCMC draws
+draws <- cplselectionMCMC(outcome_formula = YO~X1, select_formula = YS~X1+X2,
+                          outcome_dist = "Poisson", select_dist = "Logit", 
+                          data = data, loop = 5000)
+
 }

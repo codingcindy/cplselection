@@ -1,0 +1,99 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# cplselection
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+**cplselection** is an R package that corrects sample selection bias in regression estimates using a Bayesian Gaussian copula method. Different from the Heckit correction method, this method allows user to flexibly specify the selection and the outcome marginal distributions deviating from the bivariate normality assumption. The available options for outcome distribution are binomial distribution (with probit and logit link), Poisson distribution, negative binomial distribution, exponential distribution and normal distribution.
+
+## Installation
+
+To install the **cplselection** package from GitHub, you need to have R and RStudio installed on your system. Follow these steps to install the package:
+
+### Prerequisites
+
+Make sure you have the `devtools` or `remotes` package installed. You can install it from CRAN if you haven't already:
+
+```r
+install.packages("devtools")  # or use remotes: install.packages("remotes")
+``` 
+
+### Install and Load the Package
+
+Now you are ready to install the **cplselection** package:
+
+``` r
+# Using devtools
+devtools::install_github("codingcindy/cplselection")
+
+# Alternatively, using remotes
+remotes::install_github("codingcindy/cplselection")
+```
+
+After installation, you can load the package using:
+
+```r
+library(cplselection)
+```
+
+## Usage
+
+The **cplselection** package provides two functions for the estimation procedure. The function `cplselectionMCMC` performs MCMC iterations and returns an R list object containing the MCMC draws and information on acceptance probabilities and step sizes. The other function `cplselectionInfer` makes inferences based on the MCMC draws returned by `cplselectionMCMC` function and returns the Bayesian estimates in an R data.frame object.
+
+Here’s a quick overview of how to use these functions: 
+
+### Example Usage
+
+1. Perform MCMC draws with `cplselectionMCMC`
+
+```{r example}
+# Example data : Poisson outcome variable YO, logit selection process YS
+nobs <- 300
+dependence <- 0.5
+betaO0 <- 1
+betaO1 <- 1
+betaS0 <- 0
+betaS1 <- 1
+betaS2 <- 1
+uo <- runif(nobs)
+us <- pnorm(dependence*qnorm(uo) + dependence*rnorm(nobs))
+data <- data.frame(X1 = rnorm(nobs), X2 = rnorm(nobs))
+data$YO <- qpois(p=uo, lambda=exp(betaO0 + betaO1*data$X1))
+data$YS <- qbinom(p=us, prob=1/(1+exp(-(betaS0 + betaS1*data$X1 + betaS2*data$X2))), size=1)
+data$YO[data$YS==0] <- NA
+
+# perform MCMC draws
+loop <- 10000
+draws <- cplselectionMCMC(
+  outcome_formula = YO~X1, select_formula = YS~X1+X2,
+  outcome_dist = "Poisson", select_dist = "Logit", 
+  data = data, loop = loop)
+```
+
+2. Bayesian inference with `cplselectionInfer`
+
+```{r}
+# if the true values are not known
+result.1 <- cplselectionInfer(iterates=draws, burnin=loop/2)
+print(round(result.1, 2))
+
+# if the true values are known
+trueval <- c(dependence, betaO0, betaO1, betaS0, betaS1, betaS2)
+result.2 <- cplselectionInfer(iterates=draws, burnin=loop/2, trueval=trueval)
+print(round(result.2, 2))
+
+```

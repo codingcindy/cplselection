@@ -18,9 +18,29 @@
 #' @importFrom stats runif rnorm pnorm qnorm ppois pnbinom terms
 #' 
 #' @returns A list of iteration results, including MCMC parameter draws, acceptance probabilities and step sizes per slice.
-#' @export
 #'
-#' @examples NULL
+#' @examples 
+#' # Example data : Poisson outcome variable YO, logit selection process YS
+#' nobs <- 300
+#' dependence <- 0.5
+#' betaO0 <- 1
+#' betaO1 <- 1
+#' betaS0 <- 0
+#' betaS1 <- 1
+#' betaS2 <- 1
+#' uo <- runif(nobs)
+#' us <- pnorm(dependence*qnorm(uo) + dependence*rnorm(nobs))
+#' data <- data.frame(X1 = rnorm(nobs), X2 = rnorm(nobs))
+#' data$YO <- qpois(p=uo, lambda=exp(betaO0 + betaO1*data$X1))
+#' data$YS <- qbinom(p=us, prob=1/(1+exp(-(betaS0 + betaS1*data$X1 + betaS2*data$X2))), size=1)
+#' data$YO[data$YS==0] <- NA
+#' 
+#' # Perform MCMC draws
+#' draws <- cplselectionMCMC(outcome_formula = YO~X1, select_formula = YS~X1+X2,
+#'                           outcome_dist = "Poisson", select_dist = "Logit", 
+#'                           data = data, loop = 5000)
+#' 
+#' @export
 cplselectionMCMC <- function(outcome_formula, select_formula, 
                              outcome_dist, select_dist, data, 
                              loop, stepsize=0.1, stepadj=0.05, 
