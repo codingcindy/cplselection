@@ -31,11 +31,11 @@
 #'                           data = data, loop = 5000)
 #'                           
 #' # Conduct Inference
-#' # if the true values are not known
+#' # If the true values are not known, returns estimates:
 #' result.1 <- cplselectionInfer(iterates=draws, burnin=loop/2) 
 #' print(round(result.1, 2))
 #' 
-#' # if the true values are known
+#' # If the true values are known, returns true values together with estimates:
 #' trueval <- c(dependence, betaO0, betaO1, betaS0, betaS1, betaS2)
 #' result.2 <- cplselectionInfer(iterates=draws, burnin=loop/2, trueval=trueval)
 #' print(round(result.2, 2))

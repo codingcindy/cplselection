@@ -92,7 +92,7 @@ Here’s a quick overview of how to use these functions:
   ```
 2. Perform MCMC draws with `cplselectionMCMC`
   ```{r}
-  # perform MCMC draws
+  # Perform MCMC draws with user-specified marginal distributions
   loop <- 10000
   draws <- cplselectionMCMC(
     outcome_formula = YO~X1, select_formula = YS~X1+X2,
@@ -101,11 +101,12 @@ Here’s a quick overview of how to use these functions:
   ```
 3. Bayesian inference with `cplselectionInfer`
   ```{r}
-  # if the true values are not known
+  # If the true values are not known, returns sample selection corrected estimates:
   result.1 <- cplselectionInfer(iterates=draws, burnin=loop/2)
   print(round(result.1, 2))
   
-  # if the true values are known
+  # If the true values are known, returns true values together with sample selection 
+  # corrected estimates: 
   trueval <- c(dependence, betaO0, betaO1, betaS0, betaS1, betaS2)
   result.2 <- cplselectionInfer(iterates=draws, burnin=loop/2, trueval=trueval)
   print(round(result.2, 2))
@@ -113,10 +114,11 @@ Here’s a quick overview of how to use these functions:
 
 ## Documentation
 
-More details can be found by running: 
+More details on individual functions can be found by running: 
 
   ```{r, eval=FALSE}
   ?cplselectionMCMC
+  
   ?cplselectionInfer
   ```
 

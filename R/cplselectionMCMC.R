@@ -8,9 +8,9 @@
 #' @param select_dist The selection variable distribution, supporting binomial distribution with probit link ("Probit"), binomial with logit link ("Logit"), and binomial with complementary log-log link ("Cloglog").
 #' @param data The estimation sample data set, can be a data.frame object or a named matrix with column as variables.
 #' @param loop The maximum number of iterations for MCMC draws.
-#' @param stepsize The step size in the Metropolis Hastings algorithm, refers to the magnitude of proposed moves in the parameter space.
-#' @param stepadj The adjustment proportion of the MH step size based on the acceptance rates in the current slice.
-#' @param sliceadj The number of draws in a step adjustment slice.
+#' @param stepsize The step size in the Metropolis Hastings algorithm, refers to the magnitude of proposed moves in the parameter space. Default step size is 0.1.
+#' @param stepadj The adjustment proportion of the MH step size based on the acceptance rates in the current slice. Default step adjustment proportion is 5%. 
+#' @param sliceadj The number of draws in a step adjustment slice. Default slice size is 500.
 #' 
 #' @importFrom progress progress_bar
 #' @importFrom truncnorm rtruncnorm
