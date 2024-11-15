@@ -10,10 +10,21 @@
 regression estimates using a Bayesian Gaussian copula method. Different
 from the Heckit correction method, this method allows user to flexibly
 specify the selection and the outcome marginal distributions deviating
-from the bivariate normality assumption. The available options for
-outcome distribution are binomial distribution (with probit and logit
-link), Poisson distribution, negative binomial distribution, exponential
-distribution and normal distribution.
+from the bivariate normality assumption.
+
+Available options for selection distribution are
+
+- binomial distribution (with probit link, logit link, or complementary
+  log-log link)
+
+Available options for outcome distribution are
+
+- binomial distribution (with probit link, logit link, or complementary
+  log-log link)
+- Poisson distribution
+- negative binomial distribution
+- exponential distribution
+- normal distribution
 
 ## Installation
 
@@ -62,7 +73,7 @@ Here’s a quick overview of how to use these functions:
 
 ### Example Usage
 
-1.  **Generate example data set**
+1.  Generate example data set
 
 ``` r
 # Example data : Poisson outcome variable YO, logit selection process YS
@@ -82,16 +93,16 @@ data$YS <- qbinom(p=us, prob=1/(1+exp(-(betaS0 + betaS1*data$X1 + betaS2*data$X2
 data$YO[data$YS==0] <- NA
 summary(data)
 #>        X1                 X2                 YO               YS      
-#>  Min.   :-3.26321   Min.   :-3.27895   Min.   : 0.000   Min.   :0.00  
-#>  1st Qu.:-0.82787   1st Qu.:-0.68497   1st Qu.: 2.000   1st Qu.:0.00  
-#>  Median : 0.01166   Median : 0.06364   Median : 5.000   Median :0.00  
-#>  Mean   :-0.05819   Mean   : 0.01548   Mean   : 6.639   Mean   :0.49  
-#>  3rd Qu.: 0.66376   3rd Qu.: 0.66409   3rd Qu.: 8.000   3rd Qu.:1.00  
-#>  Max.   : 2.54044   Max.   : 2.70107   Max.   :43.000   Max.   :1.00  
+#>  Min.   :-3.02107   Min.   :-3.47865   Min.   : 0.000   Min.   :0.00  
+#>  1st Qu.:-0.58236   1st Qu.:-0.73045   1st Qu.: 3.000   1st Qu.:0.00  
+#>  Median : 0.01087   Median :-0.09963   Median : 6.000   Median :0.00  
+#>  Mean   : 0.02341   Mean   :-0.04409   Mean   : 7.735   Mean   :0.49  
+#>  3rd Qu.: 0.77761   3rd Qu.: 0.64504   3rd Qu.:10.000   3rd Qu.:1.00  
+#>  Max.   : 3.22271   Max.   : 2.70806   Max.   :64.000   Max.   :1.00  
 #>                                        NA's   :153
 ```
 
-2.  **Perform MCMC draws with `cplselectionMCMC`**
+2.  Perform MCMC draws with `cplselectionMCMC`
 
 ``` r
 # perform MCMC draws
@@ -102,29 +113,43 @@ draws <- cplselectionMCMC(
   data = data, loop = loop)
 ```
 
-3.  **Bayesian inference with `cplselectionInfer`**
+3.  Bayesian inference with `cplselectionInfer`
 
 ``` r
 # if the true values are not known
 result.1 <- cplselectionInfer(iterates=draws, burnin=loop/2)
 print(round(result.1, 2))
 #>        median   sd    lb   ub
-#> rho      0.74 0.09  0.53 0.88
-#> betaO0   0.94 0.07  0.79 1.09
-#> betaO1   1.03 0.04  0.92 1.11
-#> betaS0  -0.05 0.16 -0.38 0.26
-#> betaS1   1.60 0.19  1.25 1.98
-#> betaS2   1.51 0.19  1.18 1.87
+#> rho      0.69 0.10  0.45 0.83
+#> betaO0   0.97 0.07  0.86 1.09
+#> betaO1   1.02 0.04  0.95 1.10
+#> betaS0  -0.03 0.15 -0.34 0.24
+#> betaS1   1.36 0.16  1.04 1.70
+#> betaS2   1.24 0.17  0.91 1.57
 
 # if the true values are known
 trueval <- c(dependence, betaO0, betaO1, betaS0, betaS1, betaS2)
 result.2 <- cplselectionInfer(iterates=draws, burnin=loop/2, trueval=trueval)
 print(round(result.2, 2))
 #>        trueval median   sd    lb   ub
-#> rho        0.5   0.74 0.09  0.53 0.88
-#> betaO0     1.0   0.94 0.07  0.79 1.09
-#> betaO1     1.0   1.03 0.04  0.92 1.11
-#> betaS0     0.0  -0.05 0.16 -0.38 0.26
-#> betaS1     1.0   1.60 0.19  1.25 1.98
-#> betaS2     1.0   1.51 0.19  1.18 1.87
+#> rho        0.5   0.69 0.10  0.45 0.83
+#> betaO0     1.0   0.97 0.07  0.86 1.09
+#> betaO1     1.0   1.02 0.04  0.95 1.10
+#> betaS0     0.0  -0.03 0.15 -0.34 0.24
+#> betaS1     1.0   1.36 0.16  1.04 1.70
+#> betaS2     1.0   1.24 0.17  0.91 1.57
 ```
+
+## Documentation
+
+More details can be found by running:
+
+``` r
+?cplselectionMCMC
+?cplselectionInfer
+```
+
+## License
+
+This package is licensed under GPL-3
+(<https://www.gnu.org/licenses/gpl-3.0.html>).

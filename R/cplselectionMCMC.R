@@ -4,8 +4,8 @@
 #' 
 #' @param outcome_formula The outcome equation formula, e.g. YO ~ X1.
 #' @param select_formula The selection equation formula, e.g. YS ~ X1 + X2.
-#' @param outcome_dist The outcome variable distribution, supporting binomial with probit link, binomial with logit link, Poisson, negative binomial, exponential and normal distributions. 
-#' @param select_dist The selection variable distribution, supporting binomial distribution with probit and logit links. 
+#' @param outcome_dist The outcome variable distribution, supporting binomial with probit link ("Probit"), binomial with logit link ("Logit"), binomial with complementary log-log link ("Cloglog"), Poisson ("Poisson"), negative binomial ("Negative Binomial"), exponential ("Exponential") and normal ("Normal") distributions. 
+#' @param select_dist The selection variable distribution, supporting binomial distribution with probit link ("Probit"), binomial with logit link ("Logit"), and binomial with complementary log-log link ("Cloglog").
 #' @param data The estimation sample data set, can be a data.frame object or a named matrix with column as variables.
 #' @param loop The maximum number of iterations for MCMC draws.
 #' @param stepsize The step size in the Metropolis Hastings algorithm, refers to the magnitude of proposed moves in the parameter space.

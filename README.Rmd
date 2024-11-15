@@ -18,7 +18,20 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-**cplselection** is an R package that corrects sample selection bias in regression estimates using a Bayesian Gaussian copula method. Different from the Heckit correction method, this method allows user to flexibly specify the selection and the outcome marginal distributions deviating from the bivariate normality assumption. The available options for outcome distribution are binomial distribution (with probit and logit link), Poisson distribution, negative binomial distribution, exponential distribution and normal distribution.
+**cplselection** is an R package that corrects sample selection bias in regression estimates using a Bayesian Gaussian copula method. Different from the Heckit correction method, this method allows user to flexibly specify the selection and the outcome marginal distributions deviating from the bivariate normality assumption. 
+
+Available options for selection distribution are 
+
+- binomial distribution (with probit link, logit link, or complementary log-log link)
+
+Available options for outcome distribution are
+
+- binomial distribution (with probit link, logit link, or complementary log-log link)
+- Poisson distribution
+- negative binomial distribution
+- exponential distribution 
+- normal distribution
+
 
 ## Installation
 
@@ -58,7 +71,7 @@ Here’s a quick overview of how to use these functions:
 
 ### Example Usage
 
-1. **Generate example data set**
+1. Generate example data set
   ```{r example}
   # Example data : Poisson outcome variable YO, logit selection process YS
   library(cplselection)
@@ -77,7 +90,7 @@ Here’s a quick overview of how to use these functions:
   data$YO[data$YS==0] <- NA
   summary(data)
   ```
-2. **Perform MCMC draws with `cplselectionMCMC`**
+2. Perform MCMC draws with `cplselectionMCMC`
   ```{r}
   # perform MCMC draws
   loop <- 10000
@@ -86,7 +99,7 @@ Here’s a quick overview of how to use these functions:
     outcome_dist = "Poisson", select_dist = "Logit", 
     data = data, loop = loop)
   ```
-3. **Bayesian inference with `cplselectionInfer`**
+3. Bayesian inference with `cplselectionInfer`
   ```{r}
   # if the true values are not known
   result.1 <- cplselectionInfer(iterates=draws, burnin=loop/2)
@@ -97,3 +110,16 @@ Here’s a quick overview of how to use these functions:
   result.2 <- cplselectionInfer(iterates=draws, burnin=loop/2, trueval=trueval)
   print(round(result.2, 2))
   ```
+
+## Documentation
+
+More details can be found by running: 
+
+  ```{r, eval=FALSE}
+  ?cplselectionMCMC
+  ?cplselectionInfer
+  ```
+
+## License
+
+This package is licensed under GPL-3 (https://www.gnu.org/licenses/gpl-3.0.html).
