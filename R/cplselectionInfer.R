@@ -1,6 +1,8 @@
-#' Conduct Bayesian inference with given MCMC iterates
+#' Infer estimates from MCMC iterates.
+#' 
+#' This function makes Bayesian inference with given MCMC iterates returned by `cplselectionMCMC` function.
 #'
-#' @param iterates A list of MCMC iterates matrix returned by `cplselectionMCMC` funciton
+#' @param iterates A list of MCMC iterates returned by `cplselectionMCMC` function.
 #' @param burnin Burn-in iterations to discard.
 #' @param trueval True parameters, if available. Default set to NULL.
 #'

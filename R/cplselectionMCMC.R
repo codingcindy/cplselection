@@ -1,21 +1,23 @@
-#' MCMC Sampling of Bayesian copula sample selection model
-#'
-#' @param outcome_formula 
-#' @param select_formula 
-#' @param outcome_dist 
-#' @param select_dist 
-#' @param data 
-#' @param loop 
-#' @param stepsize 
-#' @param stepadj 
-#' @param sliceadj 
+#' MCMC sampling of the Bayesian copula sample selection model
+#' 
+#' This function performs MCMC sampling of the Bayesian copula sample selection model using Gibbs within Metropolis-Hastings algorithm.
+#' 
+#' @param outcome_formula The outcome equation formula, e.g. YO ~ X1.
+#' @param select_formula The selection equation formula, e.g. YS ~ X1 + X2.
+#' @param outcome_dist The outcome variable distribution, supporting binomial with probit link, binomial with logit link, Poisson, negative binomial, exponential and normal distributions. 
+#' @param select_dist The selection variable distribution, supporting binomial distribution with probit and logit links. 
+#' @param data The estimation sample data set, can be a data.frame object or a named matrix with column as variables.
+#' @param loop The maximum number of iterations for MCMC draws.
+#' @param stepsize The step size in the Metropolis Hastings algorithm, refers to the magnitude of proposed moves in the parameter space.
+#' @param stepadj The adjustment proportion of the MH step size based on the acceptance rates in the current slice.
+#' @param sliceadj The number of draws in a step adjustment slice.
 #' 
 #' @importFrom progress progress_bar
 #' @importFrom truncnorm rtruncnorm
 #' @importFrom MASS mvrnorm
 #' @importFrom stats runif rnorm pnorm qnorm ppois pnbinom terms
 #' 
-#' @returns a list of MCMC draws
+#' @returns A list of iteration results, including MCMC parameter draws, acceptance probabilities and step sizes per slice.
 #' @export
 #'
 #' @examples NULL
@@ -38,8 +40,7 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
     Omegainvoffdiag <- rho/(rho^2-1)
     Vn <- solve(V0inv+Omegainvdiag*t(x)%*%as.matrix(x)/(sigma^2))
     Vn <- (Vn+t(Vn))/2
-    un <- Vn%*%(V0invu0+Omegainvdiag*t(x)%*%as.matrix(y)/(sigma^2)+
-                  Omegainvoffdiag*t(x)%*%zcond/sigma)
+    un <- Vn%*%(V0invu0+Omegainvdiag*t(x)%*%as.matrix(y)/(sigma^2)+Omegainvoffdiag*t(x)%*%zcond/sigma)
     draw <- MASS::mvrnorm(1,un,Vn)
     return(draw)
   }
@@ -89,6 +90,11 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
       log_lik <- sum(log(
         pnorm((TU-rho*zcond)/sqrt(1-rho^2)) - pnorm((TL-rho*zcond)/sqrt(1-rho^2)))
         )
+    } else if (y_dist=="Exponential") {
+      xb <- x%*%beta
+      rate <- exp(xb)
+      z <- qnorm(1-exp(-rate*y))
+      log_lik <- sum(xb-rate*y-0.5*(rho^2)*(z^2)/(1-rho^2)+zcond*z*rho/(1-rho^2))
     } else {
       stop("Specified marginal distribution not supported.")
     }
@@ -123,6 +129,8 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
         stop("Provide variance parameter for Normal distribution.")
       }
       res <- (y-x%*%beta)/morepar
+    } else if (y_dist=="Exponential") {
+      res <- qnorm(pexp(q=y, rate=exp(x%*%beta), log.p=TRUE), log.p=TRUE)
     } else {
       ## return error message and stop execution
       stop("Specified distribution not supported.")
@@ -210,8 +218,8 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
       parnames <- c(parnames, parnam)
       assign(paste0("morepar", suffix), parnam)
       MH_par <- c(MH_par, parnam)
-    } else if (y_dist=="Poisson"|y_dist=="Probit"|
-               y_dist=="Logit"|y_dist=="Cloglog") {
+    } else if (y_dist=="Probit"|y_dist=="Logit"|y_dist=="Cloglog"|
+               y_dist=="Poisson"|y_dist=="Exponential") {
       ## no extra parameters required
     } else {
       ## return error message and stop execution
@@ -219,15 +227,13 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
     }
   }
   if (outcome_dist=="Normal") {
-    zo[YS==1] <- computezCont(outcome_dist,y=YO[YS==1],x=XO[YS==1,],
-                              beta=betaO[,1],morepar=sigmaO[,1])
-  } else if (outcome_dist=="Probit"|outcome_dist=="Logit"|
-             outcome_dist=="Cloglog"|outcome_dist=="Poisson") {
-    zo[YS==1] <- drawzDisc(outcome_dist,YO[YS==1],XO[YS==1,],
-                           betaO[,1],ZS[YS==1,1],rho[,1])
+    zo[YS==1] <- computezCont(outcome_dist,y=YO[YS==1],x=XO[YS==1,],beta=betaO[,1],morepar=sigmaO[,1])
+  } else if (outcome_dist=="Probit"|outcome_dist=="Logit"|outcome_dist=="Cloglog"|outcome_dist=="Poisson") {
+    zo[YS==1] <- drawzDisc(outcome_dist,YO[YS==1],XO[YS==1,],betaO[,1],ZS[YS==1,1],rho[,1])
   } else if (outcome_dist=="Negative Binomial") {
-    zo[YS==1] <- drawzDisc(outcome_dist,YO[YS==1],XO[YS==1,],
-                           betaO[,1],ZS[YS==1,1],rho[,1],morepar=rO[,1])
+    zo[YS==1] <- drawzDisc(outcome_dist,YO[YS==1],XO[YS==1,],betaO[,1],ZS[YS==1,1],rho[,1],morepar=rO[,1])
+  } else if (outcome_dist=="Exponential") {
+    zo[YS==1] <- computezCont(outcome_dist,y=YO[YS==1],x=XO[YS==1,],beta=betaO[,1])
   } else {
     stop("Specified distribution not supported.")
   }
@@ -374,6 +380,8 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
       zo[YS==1] <- drawzDisc(outcome_dist,y=YO[YS==1],x=XO[YS==1,],beta=betaO[,i],zcond=ZS[YS==1,i-1],rho=rho[,i],morepar=rO[,i])
     } else if (outcome_dist=="Probit"|outcome_dist=="Logit"| outcome_dist=="Cloglog"|outcome_dist=="Poisson") {
       zo[YS==1] <- drawzDisc(outcome_dist,y=YO[YS==1],x=XO[YS==1,],beta=betaO[,i],zcond=ZS[YS==1,i-1],rho=rho[,i])
+    } else if (outcome_dist=="Exponential") {
+      zo[YS==1] <- computezCont(outcome_dist,y=YO[YS==1],x=XO[YS==1,],beta=betaO[,i])
     } else {
       stop("Specified distribution not supported.")
     }

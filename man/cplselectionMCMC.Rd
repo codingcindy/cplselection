@@ -2,7 +2,7 @@
 % Please edit documentation in R/cplselectionMCMC.R
 \name{cplselectionMCMC}
 \alias{cplselectionMCMC}
-\title{MCMC Sampling of Bayesian copula sample selection model}
+\title{MCMC sampling of the Bayesian copula sample selection model}
 \usage{
 cplselectionMCMC(
   outcome_formula,
@@ -17,29 +17,29 @@ cplselectionMCMC(
 )
 }
 \arguments{
-\item{outcome_formula}{}
+\item{outcome_formula}{The outcome equation formula, e.g. YO ~ X1.}
 
-\item{select_formula}{}
+\item{select_formula}{The selection equation formula, e.g. YS ~ X1 + X2.}
 
-\item{outcome_dist}{}
+\item{outcome_dist}{The outcome variable distribution, supporting binomial with probit link, binomial with logit link, Poisson, negative binomial, exponential and normal distributions.}
 
-\item{select_dist}{}
+\item{select_dist}{The selection variable distribution, supporting binomial distribution with probit and logit links.}
 
-\item{data}{}
+\item{data}{The estimation sample data set, can be a data.frame object or a named matrix with column as variables.}
 
-\item{loop}{}
+\item{loop}{The maximum number of iterations for MCMC draws.}
 
-\item{stepsize}{}
+\item{stepsize}{The step size in the Metropolis Hastings algorithm, refers to the magnitude of proposed moves in the parameter space.}
 
-\item{stepadj}{}
+\item{stepadj}{The adjustment proportion of the MH step size based on the acceptance rates in the current slice.}
 
-\item{sliceadj}{}
+\item{sliceadj}{The number of draws in a step adjustment slice.}
 }
 \value{
-a list of MCMC draws
+A list of iteration results, including MCMC parameter draws, acceptance probabilities and step sizes per slice.
 }
 \description{
-MCMC Sampling of Bayesian copula sample selection model
+This function performs MCMC sampling of the Bayesian copula sample selection model using Gibbs within Metropolis-Hastings algorithm.
 }
 \examples{
 NULL

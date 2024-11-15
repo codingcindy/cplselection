@@ -2,12 +2,12 @@
 % Please edit documentation in R/cplselectionInfer.R
 \name{cplselectionInfer}
 \alias{cplselectionInfer}
-\title{Conduct Bayesian inference with given MCMC iterates}
+\title{Infer estimates from MCMC iterates.}
 \usage{
 cplselectionInfer(iterates, burnin, trueval = NULL)
 }
 \arguments{
-\item{iterates}{A list of MCMC iterates matrix returned by `cplselectionMCMC` funciton}
+\item{iterates}{A list of MCMC iterates returned by `cplselectionMCMC` function.}
 
 \item{burnin}{Burn-in iterations to discard.}
 
@@ -17,7 +17,7 @@ cplselectionInfer(iterates, burnin, trueval = NULL)
 A data.frame object containing estimation results.
 }
 \description{
-Conduct Bayesian inference with given MCMC iterates
+This function makes Bayesian inference with given MCMC iterates returned by `cplselectionMCMC` function.
 }
 \examples{
 NULL
