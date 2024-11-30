@@ -113,7 +113,7 @@ cplselectionMCMC <- function(outcome_formula, select_formula,
     } else if (y_dist=="Exponential") {
       xb <- x%*%beta
       rate <- exp(xb)
-      z <- qnorm(1-exp(-rate*y))
+      z <- qnorm(pexp(q=y, rate=rate, log.p=TRUE), log.p=TRUE)
       log_lik <- sum(xb-rate*y-0.5*(rho^2)*(z^2)/(1-rho^2)+zcond*z*rho/(1-rho^2))
     } else {
       stop("Specified marginal distribution not supported.")
